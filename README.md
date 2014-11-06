@@ -1,4 +1,3 @@
-cordova-plugin-ios-microphone-permission
-========================================
+# com.voicekick.cordova.microphone
 
-iOS Cordova Plugin for reading microphone permission setting
+Cordova iOS Microphone Record Permission
