@@ -2,12 +2,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Cordova/CDVPlugin.h>
 
-@interface Microphone : CDVPlugin {
-  NSString* callbackId;
-}
+@interface Microphone : CDVPlugin
 
-@property (nonatomic, retain) NSString* callbackId;
-
-- (void)microphone:(NSArray*)arguments ;
+- (void)microphone:(CDVInvokedUrlCommand*)command;
 
 @end
