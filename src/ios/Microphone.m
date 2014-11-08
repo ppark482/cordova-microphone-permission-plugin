@@ -1,39 +1,24 @@
-#import <Cordova/CDV.h>
 #import "Microphone.h"
+#import <Cordova/CDV.h>
 
 @implementation Microphone
 
-@synthesize callbackId;
-
 - (void)microphone:(CDVInvokedUrlCommand*)command {
-  self.callbackId = command.callbackId;
+  CDVPluginResult* __block pluginResult = nil;
 
-  NSArray *vComp = [[UIDevice currentDevice].systemVersion componentsSeparatedByString:@"."];
+  NSArray* version = [[UIDevice currentDevice].systemVersion componentsSeparatedByString:@"."];
 
-  if ([[vComp objectAtIndex:0] intValue] < 7) {
-    [self performSelectorOnMainThread:@selector(doSuccessCallback:) withObject:@"on" waitUntilDone:NO];
+  if ([[version objectAtIndex:0] intValue] < 7) {
+    // iOS versions before 7 need no permission to record
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:true];
   }
   else {
-    @try {
-      [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
-        NSString * grantedString = (granted) ? @"on" : @"off";
-        [self performSelectorOnMainThread:@selector(doSuccessCallback:) withObject:grantedString waitUntilDone:NO];
-      }];
-
-    }
-    @catch (id exception) {
-      NSLog(@"recordPermission try error");
-      CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_JSON_EXCEPTION messageAsString:[exception reason]];
-      NSString* javaScript = [pluginResult toErrorCallbackString:command.callbackId];
-      [self writeJavascript:javaScript];
-    }
+    [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
+      pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:granted];
+    }];
   }
-}
 
--(void) doSuccessCallback:(NSString*)granted {
-  CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:granted];
-  NSString* javaScript = [pluginResult toSuccessCallbackString:self.callbackId];
-  [self writeJavascript:javaScript];
+  [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 @end
