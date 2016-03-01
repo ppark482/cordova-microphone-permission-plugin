@@ -4,6 +4,6 @@
 
 @interface Microphone : CDVPlugin
 
-- (void)microphone:(CDVInvokedUrlCommand*)command;
+- (void)recordPermission:(CDVInvokedUrlCommand*)command;
 
 @end

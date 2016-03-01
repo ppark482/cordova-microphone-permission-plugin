@@ -1,8 +1,5 @@
-var
-  exec = require('cordova/exec');
-
-module.exports = function (next) {
-  exec(function (granted) {
-    next(granted);
-  }, null, 'Microphone', 'microphone');
-};
+window.askMicrophonePermission = function(str, callback) {
+	cordova.exec(callback, function(error) {
+		console.log('error asking for microphone permission: ', error);
+	}, 'RecordPermission', 'recordPermission');
+}
